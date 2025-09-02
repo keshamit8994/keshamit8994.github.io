@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amit Keshari | Senior Oracle & AI/ML Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Application Structure Plan: A single-page portfolio dashboard with thematic sections (Skills, Timeline, Highlights) instead of a linear document. This prioritizes scannability for recruiters, allowing them to quickly assess key qualifications via the interactive skills chart and then dive into the expandable career timeline for details. The flow is designed for non-linear exploration to be more engaging and efficient. -->
+    <!-- Visualization & Content Choices: Summary -> Inform -> Hero Section -> HTML/CSS. Skills -> Compare/Organize -> Polar Area Chart (Chart.js) + Filterable List -> Click to filter -> Provides quick visual assessment and detailed drill-down. Experience -> Change/Organize -> Interactive Vertical Timeline -> Click to expand -> More engaging than a long text block. Highlights -> Inform -> Cards -> HTML/CSS -> Makes key achievements stand out. CONFIRMATION: NO SVG/Mermaid used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF7;
+            color: #333;
+        }
+        .nav-link {
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #4A90E2;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            background-color: #4A90E2;
+            border: 4px solid #FDFBF7;
+            top: 0;
+            left: -0.625rem;
+            z-index: 10;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <header class="py-12 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800">Amit Keshari</h1>
+            <p class="mt-2 text-xl md:text-2xl text-gray-600">Senior Oracle PL/SQL & AI/ML Developer</p>
+            <div class="mt-4 flex justify-center space-x-6 text-gray-500">
+                <a href="mailto:amitvkeshari@gmail.com" class="hover:text-blue-500">amitvkeshari@gmail.com</a>
+                <span>|</span>
+                <a href="tel:603-320-7120" class="hover:text-blue-500">603-320-7120</a>
+                <span>|</span>
+                <p>Boston, MA</p>
+            </div>
+        </header>
+
+        <nav class="sticky top-0 bg-white/80 backdrop-blur-md z-20 py-4 mb-12 border-b">
+            <ul class="flex justify-center space-x-4 md:space-x-8">
+                <li><a href="#summary" class="nav-link font-medium">Summary</a></li>
+                <li><a href="#skills" class="nav-link font-medium">Skills</a></li>
+                <li><a href="#experience" class="nav-link font-medium">Experience</a></li>
+                <li><a href="#education" class="nav-link font-medium">Education</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="summary" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">Summary</h2>
+                <p class="max-w-3xl mx-auto text-center text-gray-700 leading-relaxed">
+                    Strategic, results-driven Senior Oracle PL/SQL Developer with over 13 years of experience in database management and production support, now leveraging deep expertise to build robust data pipelines for modern data science and AI/ML initiatives. Skilled in developing complex ETL processes and ensuring data integrity to support machine learning models. Proficient in Python for scripting and automation, and knowledgeable in a variety of data science and cloud tools.
+                </p>
+            </section>
+
+            <section id="skills" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Technical Proficiency</h2>
+                <div class="text-center mb-8">
+                     <p class="max-w-2xl mx-auto text-gray-700 leading-relaxed">
+                        This section provides a visual overview of my core competencies. Click on the buttons below to filter the detailed list of technologies and tools I've mastered throughout my career. This interactive display helps in quickly identifying specific skills relevant to your needs.
+                    </p>
+                </div>
+                <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                    <div class="w-full lg:w-1/2">
+                        <div class="chart-container">
+                            <canvas id="skillsChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="w-full lg:w-1/2">
+                        <div class="flex flex-wrap justify-center gap-2 mb-4">
+                            <button class="skill-btn bg-blue-500 text-white px-4 py-2 rounded-full text-sm" data-skill="all">All</button>
+                            <button class="skill-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-skill="lang">Languages</button>
+                            <button class="skill-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-skill="ds">Data Science/ML</button>
+                            <button class="skill-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-skill="db">Databases</button>
+                            <button class="skill-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-skill="etl">ETL & Replication</button>
+                            <button class="skill-btn bg-gray-200 text-gray-700 px-4 py-2 rounded-full text-sm" data-skill="tools">Tools & Cloud</button>
+                        </div>
+                        <div id="skill-list" class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="experience" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Professional Experience</h2>
+                 <div class="text-center mb-12">
+                     <p class="max-w-2xl mx-auto text-gray-700 leading-relaxed">
+                        My career journey is detailed below in a timeline format. Each entry represents a significant role where I've contributed to various projects and honed my skills. Click on each job title to expand and view the specific responsibilities and key achievements from that position.
+                    </p>
+                </div>
+                <div class="relative max-w-3xl mx-auto border-l-2 border-gray-200 pl-8">
+                    
+                    <div class="timeline-item mb-12">
+                        <div class="cursor-pointer" onclick="toggleDetails('cvs')">
+                            <h3 class="text-xl font-bold text-gray-800">Senior Oracle PL/SQL Developer</h3>
+                            <p class="font-medium text-blue-600">CVS Health | Providence, RI</p>
+                            <p class="text-sm text-gray-500">Apr 2019 - Present</p>
+                        </div>
+                        <div id="cvs-details" class="hidden mt-4 pl-4 border-l-2 border-gray-100">
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Created Oracle database objects including tables, views, stored procedures, and functions.</li>
+                                <li>Optimized query performance using Explain Plan, SQL*PLUS, and Oracle AWR reports.</li>
+                                <li>Led the migration of all database objects and batch jobs from Oracle 11g to Oracle 19c.</li>
+                                <li>Reduced batch job failure rates by 20% through proactive monitoring and resolution.</li>
+                                <li>Provided production support for over 1000 batch jobs using Control-M.</li>
+                                <li>Wrote Python scripts to automate data preprocessing, cleaning, and feature engineering for ML models.</li>
+                                <li>Coordinated troubleshooting for Oracle Goldengate, achieving resolution within an average of 2 hours.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item mb-12">
+                        <div class="cursor-pointer" onclick="toggleDetails('statestreet')">
+                            <h3 class="text-xl font-bold text-gray-800">Database Expert</h3>
+                            <p class="font-medium text-blue-600">StateStreet | Quincy, MA</p>
+                            <p class="text-sm text-gray-500">Mar 2017 – Mar 2019</p>
+                        </div>
+                        <div id="statestreet-details" class="hidden mt-4 pl-4 border-l-2 border-gray-100">
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Handled and stored various file types (CSV, XML) from multiple sources into a central data warehouse.</li>
+                                <li>Wrote and maintained complex PL/SQL scripts, stored procedures, functions, packages, and triggers.</li>
+                                <li>Collaborated with database architects to design efficient and scalable data models.</li>
+                                <li>Managed version control for PL/SQL databases using SVN.</li>
+                                <li>Provided production support for batch jobs and used ETL tools like Informatica and Talend.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item mb-12">
+                        <div class="cursor-pointer" onclick="toggleDetails('infrogroup')">
+                            <h3 class="text-xl font-bold text-gray-800">Senior Oracle Database Developer</h3>
+                            <p class="font-medium text-blue-600">INFROGROUP | Burlington, MA</p>
+                            <p class="text-sm text-gray-500">May 2015 – Feb 2017</p>
+                        </div>
+                        <div id="infrogroup-details" class="hidden mt-4 pl-4 border-l-2 border-gray-100">
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Created a wide range of database objects in Toad and SQL Developer.</li>
+                                <li>Developed complex SQL queries and subqueries using aggregation and analytical functions.</li>
+                                <li>Tuned queries using Explain Plan and various hints for faster execution.</li>
+                                <li>Utilized Talend to load files into staging and target tables and used cron jobs for scheduling.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="cursor-pointer" onclick="toggleDetails('syntel')">
+                            <h3 class="text-xl font-bold text-gray-800">Oracle PL/SQL Developer</h3>
+                            <p class="font-medium text-blue-600">Syntel | Mumbai, India</p>
+                            <p class="text-sm text-gray-500">Nov 2011 – Apr 2015</p>
+                        </div>
+                        <div id="syntel-details" class="hidden mt-4 pl-4 border-l-2 border-gray-100">
+                            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                                <li>Created complex SQL queries and packages for a Performance Measurement and Attribution project.</li>
+                                <li>Implemented relational and dimensional modeling (star/snowflake schema).</li>
+                                <li>Used Tivoli for job scheduling and Informatica for creating complex mappings.</li>
+                                <li>Debugged and troubleshot PL/SQL code related to database performance and data integrity.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="education" class="mb-16 scroll-mt-24">
+                <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Education & Certifications</h2>
+                <div class="max-w-3xl mx-auto grid md:grid-cols-2 gap-8 text-center">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Education</h3>
+                        <div class="mt-4 bg-white p-6 rounded-lg shadow-sm">
+                            <p class="font-semibold">Bachelor of Technology, Information Technology</p>
+                            <p class="text-gray-600">Bundelkhand Institute of Engineering and Technology, Jhansi, India</p>
+                            <p class="text-sm text-gray-500">2007-2011</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">Certifications</h3>
+                        <div class="mt-4 bg-white p-6 rounded-lg shadow-sm">
+                            <ul class="space-y-2 text-gray-700">
+                                <li>Certified Scrum Master</li>
+                                <li>Google Cloud Leader</li>
+                                <li>Oracle Certified – Advanced PL/SQL</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="text-center py-8 border-t text-gray-500">
+            <p>&copy; 2024 Amit Keshari. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        const skillsData = {
+            lang: ['PL/SQL', 'SQL', 'Python', 'Unix Shell', 'Java'],
+            ds: ['Data Preprocessing', 'Feature Engineering', 'Data Pipelines', 'Scikit-learn', 'Pandas'],
+            db: ['Oracle 11g/12c/19c'],
+            etl: ['Informatica', 'Talend', 'SQL*Loader', 'Oracle Data Pump', 'Oracle Goldengate', 'Qrep'],
+            tools: ['Control-M', 'Git', 'SVN', 'SQL Developer', 'Toad', 'AWS', 'Google Cloud', 'Jira', 'Agile/Scrum']
+        };
+
+        const skillListContainer = document.getElementById('skill-list');
+        const skillButtons = document.querySelectorAll('.skill-btn');
+
+        function displaySkills(filter = 'all') {
+            skillListContainer.innerHTML = '';
+            let skillsToShow = [];
+
+            if (filter === 'all') {
+                skillsToShow = Object.values(skillsData).flat();
+            } else {
+                skillsToShow = skillsData[filter];
+            }
+
+            skillsToShow.forEach(skill => {
+                const skillElement = document.createElement('div');
+                skillElement.className = 'bg-white p-3 rounded-lg shadow-sm text-gray-700 font-medium';
+                skillElement.textContent = skill;
+                skillListContainer.appendChild(skillElement);
+            });
+        }
+
+        skillButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                skillButtons.forEach(btn => {
+                    btn.classList.remove('bg-blue-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                button.classList.add('bg-blue-500', 'text-white');
+                button.classList.remove('bg-gray-200', 'text-gray-700');
+                displaySkills(button.dataset.skill);
+            });
+        });
+
+        function toggleDetails(id) {
+            const details = document.getElementById(id + '-details');
+            if (details) {
+                details.classList.toggle('hidden');
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Databases & SQL', 'ETL & Replication', 'Languages', 'Data Science/ML', 'Tools & Methodologies'],
+                    datasets: [{
+                        label: 'Proficiency',
+                        data: [95, 90, 85, 80, 88],
+                        backgroundColor: [
+                            'rgba(74, 144, 226, 0.7)',
+                            'rgba(80, 227, 194, 0.7)',
+                            'rgba(245, 166, 35, 0.7)',
+                            'rgba(255, 99, 132, 0.7)',
+                            'rgba(153, 102, 255, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(74, 144, 226, 1)',
+                            'rgba(80, 227, 194, 1)',
+                            'rgba(245, 166, 35, 1)',
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(153, 102, 255, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            pointLabels: {
+                                display: true,
+                                centerPointLabels: true,
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            ticks: {
+                                backdropColor: 'rgba(255, 255, 255, 0.75)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            displaySkills();
+        });
+    </script>
+</body>
+</html>
